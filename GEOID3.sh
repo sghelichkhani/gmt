@@ -62,7 +62,7 @@ tick_note=$(echo $(echo $upper_bound - $lower_bound | bc) / 5 | bc)
 interval=$(echo $(echo $upper_bound - $lower_bound | bc) / 5 | bc)
 
 #Creating GMT color Palette
-makecpt -C$cpt_mode -T$lower_bound/$upper_bound/$interval -Z > colors.cpt
+makecpt -C$cpt_mode -T$lower_bound/$upper_bound/$interval > colors.cpt
 # Loop creating the grid files
 for ((i=0; i<=${#suffix1[@]}-1; ++i )); do
 declare -a name=($(ls $(echo ${path}${cname}".*."${suffix1[$i]})"_"${iteration}))
@@ -75,10 +75,10 @@ xCoor=$(echo $(echo ${x_size}*${i} | bc) + 1 | bc)
 yCoor=$(echo $(echo ${y_size}*${j} | bc) + 1 | bc)
 #name=$(echo ${path}${cname}"."${depths[$j]}"."${iteration}"_"${suffix1[$i]});
 # Conversion of latitude and longitude to GMT grid NETCDF(Prob!) 
-xyz2grd ${name[$j]} -Ggrid${i}"-"${j}".grd" -R$lon1/$lon2/$lat1/$lat2 -I$x_grid_space/$y_grid_space -V
+xyz2grd ${name[$j]} -Ggrid${i}"-"${j}".grd" -R$lon1/$lon2/$lat1/$lat2 -I10/10 -V
 #grdimage -V grid${i}"-"${j}".grd" -Yf${yCoor}"c" -Xf${xCoor}"c" -Ccolors.cpt -Rd -JW0/${tot_size} -Ei -K > It${iteration}-d${j}-${suffix1[$i]}".ps"
-grdimage -V grid${i}"-"${j}".grd" -Ccolors.cpt -Rd -JW0/${tot_size} -Ei -K > It${iteration}-d${depths[$j]}-${suffix1[$i]}".ps"
-pscoast -JW${tot_size} -Rd -W0.9p -Dc -O -A0/0/1 >> It${iteration}-d${j}-${suffix1[$i]}".ps"
+grdimage -V grid${i}"-"${j}".grd" -Ccolors.cpt -Rd -JX15 > It${iteration}-d${depths[$j]}-${suffix1[$i]}".ps"
+#pscoast -JW${tot_size} -Rd -W0.9p -Dc -O -A0/0/1 >> It${iteration}-d${j}-${suffix1[$i]}".ps"
 #pstext -Rd -JW${tot_size} -F+f$font_size"p" -O -N -Y-$y_dist"c" -X  >> It${iteration}-d${j}-${suffix1[$i]}".ps" << END
 #0 0 km, $stage_time Ma ago
 #END
