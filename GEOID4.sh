@@ -15,7 +15,7 @@ tot_t_num=26
 # The time_step between every two outputs
 time_step=$(echo "scale = 1; $time/($tot_t_num-1)" | bc)
 # nth of the iteration
-declare -a depth=(00)
+declare -a depth=(2800)
 # iTH iteration to be plotted
 iteration=07
 #		***** 	Second Order	*****
@@ -44,10 +44,12 @@ makecpt -C$cpt_mode -T$lower_bound/$upper_bound/$interval > colors.cpt
 #	*****	For loop for plotting everything	*****
 for ((i=0; i<=${#depth[@]}-1; ++i )); do
 declare -a name=($(ls $(echo ${path}${cname}"."${depth[$i]}"*_"${iteration})))
-for ((j=0; j<=${#name[@]-1}; ++j )); do
+for ((j=0; j<=${#name[@]}-1; ++j )); do
 #for ((j=0; j<=3; ++j )); do
-echo ${name[$j]}
 full=$(echo ${name[$j]})
+full_len=${#full}
+out_num=${full:$full_len-5:2}
+echo ${out_num}" of "$tot_t_num
 # Conversion of latitude and longitude to GMT grid NETCDF(Prob!) 
 xyz2grd ${name[$j]} -G"grid"${i}"-"${j}".grd" -R$lon1/$lon2/$lat1/$lat2 -I$x_grid_space/$y_grid_space 
 # Plot the gridded image
@@ -58,13 +60,16 @@ pscoast -R $Projection -Dc -W0.1 -A10000 \
  -K -O >> $cname"-out"${i}"-iter"${j}".ps"
 #pstext -R $Projection -G0 -O -K << EOF >> $cname"-out"${i}"-iter"${j}".ps"
 pstext -R $Projection -G1 -O -K -N << EOF >> $cname"-out"${i}"-iter"${j}".ps"
-0 +90 70 0 14 BL "Depth"
+0 -90 12 0 14 BC $(echo $time - ${time_step}*$j | bc)" Ma ago"
 EOF
 ## Add a scale bar of the colors
 psscale -D$(expr 1 \* $size)/$(python -c "print 1.2 *$size")/$(expr 2 \* $size)/.6h -O \
 -Ccolors.cpt -B$interval >> $cname"-out"${i}"-iter"${j}".ps"
+ps2pdf $cname"-out"${i}"-iter"${j}".ps" $cname"-depth"${depth[$i]}"-out"${out_num}".pdf" 
+rm *grd *ps
 done
+pdfjam --landscape --suffix 'Kino' *pdf 
 done
 ## Remove the temporary files
-rm colors.cpt *.grd
-#
+rm *cpt
+
