@@ -1,0 +1,9 @@
+# GMT 5 Session common arguments shelf
+B	10
+J	W
+JW	W0/10d
+JX	X10d/5d
+R	-180/180/-90/+90
+X	10c
+Y	2c
+EOF
