@@ -74,7 +74,7 @@ rm *grd *ps
 done
 mkdir -p Kino
 pdfjam --landscape --suffix 'Kino' *pdf
-mv *Kino.pdf ./Kino/$cname"-depth"${depth[$i]}"-Iter-"${iteration}"kino.pdf"
+mv *Kino.pdf ../plots/GMT/Kino/$cname"-depth"${depth[$i]}"-Iter-"${iteration}"kino.pdf"
 rm *pdf
 done
 done
